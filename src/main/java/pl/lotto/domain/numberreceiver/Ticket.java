@@ -1,4 +1,9 @@
 package pl.lotto.domain.numberreceiver;
 
- record Ticket(String ticketId, java.time.LocalDateTime drowData, java.util.Set<Integer> numbersfromUser) {
+import java.time.LocalDateTime;
+import java.util.Set;
+import lombok.Builder;
+
+@Builder
+record Ticket(String hash, Set<Integer> numbers, LocalDateTime drawDate) {
 }

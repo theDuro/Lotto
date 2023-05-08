@@ -1,18 +1,42 @@
 package pl.lotto.domain.numberreceiver;
 
-import lombok.AllArgsConstructor;
-
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
-@AllArgsConstructor
+import java.util.stream.Collectors;
+
 class NumberValidator {
-    public static final int CORECT_NUMBERS_FROM_USER =6;
-    public static final int MINIMAl_NUMBER_FROM_USER =1;
-    public static final int  MAXIMAL_NUMBERS_FROM_USER =99;
-    boolean areAllNumrsInRande(Set<Integer> numbersfromUser){
-        return   numbersfromUser.stream()
-                .filter(i -> i >= MINIMAl_NUMBER_FROM_USER)
-                .filter(i -> i <= MAXIMAL_NUMBERS_FROM_USER)
-                .count() == CORECT_NUMBERS_FROM_USER;
+
+    private static final int QUANTITY_OF_NUMBERS_FROM_USER = 6;
+    private static final int MAX_VALUE_NUMBER_FROM_USER = 99;
+    private static final int MIN_VALUE_NUMBER_FROM_USER = 1;
+
+
+    List<ValidationResult> errors = new LinkedList<>();
+
+    List<ValidationResult> validate(Set<Integer> numbersFromUser) {
+        if (!isNumbersSizeEqualSix(numbersFromUser)) {
+            errors.add(ValidationResult.NOT_SIX_NUMBERS_GIVEN);
+        }
+        if (!isNumberInRange(numbersFromUser)) {
+            errors.add(ValidationResult.NOT_IN_RANGE);
+        }
+        return errors;
     }
 
+    String createResultMessage() {
+        return this.errors
+                .stream()
+                .map(validationResult -> validationResult.info)
+                .collect(Collectors.joining(","));
+    }
+
+    private boolean isNumbersSizeEqualSix(Set<Integer> numbersFromUser) {
+        return numbersFromUser.size() == QUANTITY_OF_NUMBERS_FROM_USER;
+    }
+
+    boolean isNumberInRange(Set<Integer> numbersFromUser) {
+        return numbersFromUser.stream()
+                .allMatch(number -> number >= MIN_VALUE_NUMBER_FROM_USER && number <= MAX_VALUE_NUMBER_FROM_USER);
+    }
 }
